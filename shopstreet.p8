@@ -4,13 +4,15 @@ __lua__
 -- shop street - the game
 -- by teronan
 
-function init()
+function _init()
 end
 
-function __update()
+function _update()
 end
 
-function __draw()
+function _draw()
+	cls()
+	print("test print")
 end
 
 __gfx__
