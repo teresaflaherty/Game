@@ -7,17 +7,20 @@ __lua__
 function _init()
 	make_map()
 	make_player()
+	init_enemies()
 end
 
 function _update()
 	update_camera()
 	update_player()
+	update_enemies()
 end
 
 function _draw()
 	cls()
 	draw_map()
 	draw_player()
+	draw_enemies()
 	
 	camera(camx,camy)
 end
@@ -65,8 +68,65 @@ function draw_player()
 	spr(p.sprite1,p.x,p.y-8,1,1,p.inv,false)
 	spr(p.sprite2,p.x,p.y,1,1,p.inv,false)
 end
+
 -->8
 -- enemy
+
+function init_enemies()
+	enemies = {}
+	num_shop_lanes = 5
+	num_play_lanes =
+		16 - num_shop_lanes
+	min_spawn_ticks = 0.3
+	max_spawn_ticks = 1
+	next_spawn = 0
+end
+
+function create_enemy()
+	local enemy = {}
+	enemy.lane = flr(rnd(num_play_lanes))
+	enemy.x = 128
+	enemy.speed = -0.75
+	add(enemies, enemy)
+end
+
+function update_enemy(enemy)
+	enemy.x += enemy.speed
+end
+
+function update_enemies()
+	local cur_time = time()
+	
+	if cur_time >= next_spawn then
+		create_enemy()
+		
+		next_spawn =
+			cur_time +
+			min_spawn_ticks +
+			rnd(max_spawn_ticks)
+	end
+	
+	for i, e in pairs(enemies) do
+		update_enemy(e)
+	end
+end
+
+function draw_enemy(enemy)
+	local y_start = (num_shop_lanes + enemy.lane) * 8
+	
+	rectfill(
+		enemy.x,
+		y_start,
+		enemy.x + 8,
+		y_start + 8,
+		11)
+end
+
+function draw_enemies()
+	for i, e in pairs(enemies) do
+		draw_enemy(e)
+	end
+end
 -->8
 -- map
 
