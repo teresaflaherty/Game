@@ -146,12 +146,10 @@ function check_collision()
 end
 
 function check_collided(enemy)
-	print(p.lane,p.x-10,p.lane*8,1)
-	print(enemy.lane,p.x-10,p.lane*8+8,1)
 	if p.lane==enemy.lane and
 				p.x+8>=enemy.x and
 				p.x<=enemy.x+8 then
-		print("colliding",p.x,p.lane*8-15,1)
+		--game_over()
 	end
 end
 
