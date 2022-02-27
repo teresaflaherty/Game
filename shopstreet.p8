@@ -28,7 +28,7 @@ end
 function update_camera()
 	if btn(➡️) and 
 	   p.x>m.min+48 and 
-	   sp.x<m.max-72 then
+	   p.x<m.max-72 then
 		camx+=p.speed
 		m.min+=p.speed
 	end
@@ -77,15 +77,16 @@ function init_enemies()
 	num_shop_lanes = 5
 	num_play_lanes =
 		16 - num_shop_lanes
-	min_spawn_ticks = 0.3
-	max_spawn_ticks = 1
+	min_spawn_ticks = 0.4
+	max_spawn_ticks = 0.8
 	next_spawn = 0
+	spawn_locs = gen_spawn_locs()
 end
 
-function create_enemy()
+function create_enemy(lane)
 	local enemy = {}
-	enemy.lane = flr(rnd(num_play_lanes))
-	enemy.x = 128
+	enemy.lane = lane
+	enemy.x = p.x + 128
 	enemy.speed = -0.75
 	add(enemies, enemy)
 end
@@ -98,7 +99,15 @@ function update_enemies()
 	local cur_time = time()
 	
 	if cur_time >= next_spawn then
-		create_enemy()
+		if count(spawn_locs) == 0 then
+			spawn_locs = gen_spawn_locs()
+		end
+		
+		local lane_index =
+			flr(rnd(count(spawn_locs))) + 1
+		lane = spawn_locs[lane_index]
+		del(spawn_locs, lane)
+		create_enemy(lane)
 		
 		next_spawn =
 			cur_time +
@@ -112,13 +121,13 @@ function update_enemies()
 end
 
 function draw_enemy(enemy)
-	local y_start = (num_shop_lanes + enemy.lane) * 8
+	local y_start = (num_shop_lanes + (enemy.lane - 1)) * 8
 	
 	rectfill(
 		enemy.x,
-		y_start,
-		enemy.x + 8,
-		y_start + 8,
+		y_start - 8,
+		enemy.x + 7,
+		y_start + 7,
 		11)
 end
 
@@ -126,6 +135,16 @@ function draw_enemies()
 	for i, e in pairs(enemies) do
 		draw_enemy(e)
 	end
+end
+
+function gen_spawn_locs()
+	local locs = {}
+	
+	for i = 1, num_play_lanes do
+		add(locs, i)
+	end
+	
+	return locs
 end
 -->8
 -- map
@@ -303,3 +322,6 @@ __map__
 1313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313
 1313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313
 1313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313
+__music__
+00 01424344
+
